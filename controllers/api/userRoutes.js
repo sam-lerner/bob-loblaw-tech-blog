@@ -43,4 +43,6 @@ router.post('/logout', (req, res) => {
   }
 });
 
+// Create a new user
+
 module.exports = router;
