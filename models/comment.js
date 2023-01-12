@@ -24,7 +24,7 @@ Comment.init(
             },
         },
         post_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER, 
             allowNull: false,
             references: {
                 model: 'post',
@@ -34,6 +34,7 @@ Comment.init(
     },
     {
         sequelize,
+        timestamps: true,
         freezeTableName: true,
         underscored: true,
         modelName: 'comment',
