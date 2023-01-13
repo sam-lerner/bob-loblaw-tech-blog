@@ -1,6 +1,6 @@
-const User = require('./user');
-const Post = require('./post');
-const Comment = require('./comment');
+const User = require('./User');
+const Post = require('./Post');
+const Comment = require('./Comment');
 
 // Users can make multiple posts. Persist without User.
 User.hasMany(Post, {
