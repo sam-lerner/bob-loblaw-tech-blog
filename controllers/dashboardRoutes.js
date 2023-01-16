@@ -6,7 +6,7 @@ const withAuth = require('../utils/auth');
 // GET Route for all user posts
 router.get('/', withAuth, async (req, res) => {
     try {
-        const allComments = await Post.findAll({
+        const allPosts = await Post.findAll({
             where: {
                 user_id: req.session.user_id,
             },
@@ -24,7 +24,7 @@ router.get('/', withAuth, async (req, res) => {
                 },
             ],
         })
-        res.status(200).json(allComments);
+        res.status(200).json(allPosts);
     } catch (err) {
         res.status(500).json(err)
     }
@@ -48,7 +48,7 @@ router.get('/edit/:id', withAuth, async (req, res) => {
             ],
         })
         if (!onePost) {
-            res.status(404).json({ message: 'No post found with that id!'})
+            res.status(404).json({ message: 'No post found with that id!' })
             return
         }
         res.status(200).json(onePost);
@@ -56,3 +56,14 @@ router.get('/edit/:id', withAuth, async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+// GET route for new post
+router.get('/new', withAuth, async (req, res) => {
+    try {
+        res.render('new-post', { name: req.session.name })
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+module.exports = router;

@@ -4,13 +4,23 @@ const { Post, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
 
 // GET Route for all posts
-router.get('/', withAuth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const userData = await User.findAll({
-      attributes: { exclude: ['password'] },
-      order: [['name', 'ASC']],
-    });
-
+    Post.findAll({
+      include: [
+        {
+          model: Comment,
+          include: {
+            model: User,
+            attributes: ['name'],
+          },
+        },
+        {
+          model: User,
+          attributes: ['name'],
+        }
+      ],
+    })
     const users = userData.map((project) => project.get({ plain: true }));
 
     res.render('homepage', {
@@ -22,6 +32,7 @@ router.get('/', withAuth, async (req, res) => {
   }
 });
 
+
 // Log in or log out
 router.get('/login', (req, res) => {
   if (req.session.logged_in) {
@@ -30,6 +41,11 @@ router.get('/login', (req, res) => {
   }
 
   res.render('login');
+});
+
+// Sign in page
+router.get('/signup', (req, res) => {
+  res.render('signup');
 });
 
 module.exports = router;
