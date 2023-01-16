@@ -4,34 +4,37 @@ const { Post, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
 
 // GET Route for all posts
-router.get('/', async (req, res) => {
-  try {
-    Post.findAll({
-      include: [
-        {
-          model: Comment,
-          include: {
-            model: User,
-            attributes: ['name'],
-          },
-        },
-        {
+router.get('/', (req, res) => {
+  Post.findAll({
+    attributes: ['id', 'title', 'body', 'created_at'],
+    include: [
+      {
+        model: Comment,
+        attributes: ['id', 'comment', 'post_id', 'user_id', 'created_at'],
+        include: {
           model: User,
           attributes: ['name'],
-        }
-      ],
+        },
+      },
+      {
+        model: User,
+        attributes: ['name'],
+      },
+    ],
+  })
+    .then((dbPostData) => {
+      const posts = dbPostData.map((post) => post.get({ plain: true }));
+      res.render('homepage', {
+        posts,
+        logged_in: req.session.logged_in,
+        name: req.session.name,
+      });
     })
-    const users = userData.map((project) => project.get({ plain: true }));
-
-    res.render('homepage', {
-      users,
-      logged_in: req.session.logged_in,
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
     });
-  } catch (err) {
-    res.status(500).json(err);
-  }
 });
-
 
 // Log in or log out
 router.get('/login', (req, res) => {

@@ -40,12 +40,12 @@ router.post('/', withAuth, async (req, res) => {
         res.status(400).json(err);
     }
 })
-// PUT comment ?
+// PUT to edit comment
 router.put('/:id', withAuth, async (req, res) => {
     try {
         const updatedComment = await Comment.update(
             {
-                comment_text: req.body.comment_text,
+                comment: req.body.comment,
             },
             {
                 where: {

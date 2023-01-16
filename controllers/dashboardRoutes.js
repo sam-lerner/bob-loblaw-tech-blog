@@ -4,31 +4,66 @@ const { Post, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
 
 // GET Route for all user posts
-router.get('/', withAuth, async (req, res) => {
-    try {
-        const allPosts = await Post.findAll({
-            where: {
-                user_id: req.session.user_id,
-            },
-            include: [
-                {
-                    model: Comment,
-                    include: {
-                        model: User,
-                        attributes: ['name'],
-                    },
-                },
-                {
-                    model: User,
-                    attributes: ['name'],
-                },
-            ],
-        })
-        res.status(200).json(allPosts);
-    } catch (err) {
-        res.status(500).json(err)
-    }
-});
+// router.get('/', withAuth, async (req, res) => {
+//     try {
+//         const allPosts = await Post.findAll({
+//             where: {
+//                 user_id: req.session.user_id,
+//             },
+//             include: [
+//                 {
+//                     model: Comment,
+//                     include: {
+//                         model: User,
+//                         attributes: ['name'],
+//                     },
+//                 },
+//                 {
+//                     model: User,
+//                     attributes: ['name'],
+//                 },
+//             ],
+//         })
+//         res.status(200).json(allPosts);
+//     } catch (err) {
+//         res.status(500).json(err)
+//     }
+// });
+
+router.get('/', withAuth, (req, res) => {
+    Post.findAll({
+      where: {
+        user_id: req.session.user_id,
+      },
+      attributes: ['id', 'title', 'body', 'created_at'],
+      include: [
+        {
+          model: Comment,
+          attributes: ['id', 'comment', 'post_id', 'user_id', 'created_at'],
+          include: {
+            model: User,
+            attributes: ['name'],
+          },
+        },
+        {
+          model: User,
+          attributes: ['name'],
+        },
+      ],
+    })
+      .then((dbPostData) => {
+        const posts = dbPostData.map((post) => post.get({ plain: true }));
+        res.render('dashboard', {
+          posts,
+          logged_in: true,
+          name: req.session.name,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  });
 // GET Route for one user post
 router.get('/edit/:id', withAuth, async (req, res) => {
     try {
@@ -58,7 +93,7 @@ router.get('/edit/:id', withAuth, async (req, res) => {
 });
 
 // GET route for new post
-router.get('/new', withAuth, async (req, res) => {
+router.get('/new', async (req, res) => {
     try {
         res.render('new-post', { name: req.session.name })
     } catch (err) {
