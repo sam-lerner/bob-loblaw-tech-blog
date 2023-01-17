@@ -1,6 +1,7 @@
 async function logout() {
+  console.log("Log out triggered")
   const response = await fetch('/api/user/logout', {
-    method: 'post',
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' },
   });
 
