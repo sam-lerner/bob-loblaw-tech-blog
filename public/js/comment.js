@@ -1,7 +1,7 @@
 async function commentFormHandler(event) {
     event.preventDefault();
   
-    const comment_text = document
+    const comment = document
       .querySelector('input[name="comment"]')
       .value.trim();
   
@@ -9,12 +9,12 @@ async function commentFormHandler(event) {
       window.location.toString().split('/').length - 1
     ];
   
-    if (comment_text) {
+    if (comment) {
       const response = await fetch('/api/comment', {
         method: 'POST',
         body: JSON.stringify({
           post_id,
-          comment_text,
+          comment,
         }),
         headers: {
           'Content-Type': 'application/json',

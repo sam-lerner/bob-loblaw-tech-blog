@@ -1,4 +1,6 @@
-{{> posts post}}
+{{!-- Not logged in --}}
+
+{{> post-info post}}
 
 {{#if logged_in}}
 <div class="card">
@@ -6,7 +8,7 @@
     <form class="card-body comment-form" id="comment-form">
 
         <label class="form-label">Comment</label>
-        <input id="comment" name="comment-body" class="form-input" />
+        <input id="comment" name="comment" class="form-input" />
 
         <button type="submit" class="btn">Submit</button>
     </form>
