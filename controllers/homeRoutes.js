@@ -83,7 +83,7 @@ router.get('/post/:id', (req, res) => {
       res.render('single-post', {
         post,
         logged_in: req.session.logged_in,
-        username: req.session.username,
+        name: req.session.name,
       });
     })
     .catch((err) => {
