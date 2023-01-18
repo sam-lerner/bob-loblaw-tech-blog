@@ -8,6 +8,10 @@
     "start": "node server.js",
     "seed": "node seeds/seed.js"
   },
+  "repository": { 
+  "type": "git", 
+  "url": "https://github.com/sam-lerner/bob-loblaw-tech-blog" 
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
