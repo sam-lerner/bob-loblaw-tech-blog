@@ -24,6 +24,11 @@ const sess = {
   })
 };
 
+app.use((req, res, next) => {
+  console.log(`${req.method} request received on endpoint ${req.url}`);
+  next();
+});
+
 app.use(session(sess));
 
 app.engine('handlebars', hbs.engine);
@@ -32,7 +37,7 @@ app.set('view engine', 'handlebars');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 app.use(routes);
 
