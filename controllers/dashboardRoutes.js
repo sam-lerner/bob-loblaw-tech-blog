@@ -27,7 +27,7 @@ router.get('/', withAuth, async (req, res) => {
         },
       ],
     })
-   
+
     const posts = postData.map((post) => post.get({ plain: true }));
 
     // res.status(200).json(postData);
@@ -42,73 +42,38 @@ router.get('/', withAuth, async (req, res) => {
 });
 
 // GET Route for one user post
-// router.get('/edit/:id', withAuth, async (req, res) => {
-//   try {
-//     const onePost = await Post.findByPk(req.params.id, {
-//       include: [
-//         {
-//           model: User,
-//           attributes: ['name'],
-//         },
-//         {
-//           model: Comment,
-//           include: {
-//             model: User,
-//             attributes: ['name'],
-//           },
-//         },
-//       ],
-//     })
-//     if (!onePost) {
-//       res.status(404).json({ message: 'No post found with that id!' })
-//       return
-//     }
-//     // res.status(200).json(onePost);
-//     // Add res.render
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// });
-
-router.get('/edit/:id', withAuth, (req, res) => {
-  Post.findOne({
-    where: {
-      id: req.params.id,
-    },
-    attributes: ['id', 'title', 'body', 'created_at'],
-    include: [
-      {
-        model: User,
-        attributes: ['name'],
-      },
-      {
-        model: Comment,
-        attributes: ['id', 'comment', 'post_id', 'user_id', 'created_at'],
-        include: {
+router.get('/edit/:id', withAuth, async (req, res) => {
+  try {
+    const dbPostData = await Post.findByPk(req.params.id, {
+      include: [
+        {
           model: User,
           attributes: ['name'],
         },
-      },
-    ],
-  })
-    .then((dbPostData) => {
-      if (!dbPostData) {
-        res.status(404).json({ message: 'No post found with this id' });
-        return;
-      }
-
-      const post = dbPostData.get({ plain: true });
-      console.log('sending ' + req.session.name);
-      res.render('edit-post', {
-        post,
-        logged_in: true,
-        name: req.session.name,
-      });
+        {
+          model: Comment,
+          attributes: ['id', 'comment', 'post_id', 'user_id', 'created_at'],
+          include: {
+            model: User,
+            attributes: ['name'],
+          },
+        },
+      ],
     })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+    if (!dbPostData) {
+      res.status(404).json({ message: 'No post found with that id' });
+      return;
+    }
+    const post = dbPostData.get({ plain: true });
+    console.log('sending ' + req.session.name);
+    res.render('edit-post', {
+      post,
+      logged_in: true,
+      name: req.session.name,
     });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 // GET route for new post
